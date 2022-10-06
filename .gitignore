@@ -1,0 +1,9 @@
+node_modules
+package-lock.json
+
+
+git add .
+git commit -m "start journey"
+git branch -M master
+git remote add origin https://github.com/n-suzuki0202/teamsNotification.git
+git push -u origin master
