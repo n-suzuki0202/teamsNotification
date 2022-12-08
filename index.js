@@ -1,20 +1,14 @@
 const axios  = require('axios');
 
 const 
-  URI = 'teamsWebhookUrl',
+  URI         = 'webhookURL',
   BACKLOG_URI = 'https://xxx.backlog.com/';
 
 exports.handler = async event => {
   const 
-    bl_body = JSON.parse(event.body),
-    bl_type = bl_body.type;
-
-  let payload_dic = {};
-  if (bl_type === 14) {
-    payload_dic = issue_multi_update(bl_body);
-  } else {
+    bl_body     = JSON.parse(event.body),
+    bl_type     = bl_body.type,
     payload_dic = handleIssue(bl_body);
-  }
 
   if (payload_dic !== null) {
     await axios.post(URI, payload_dic);
@@ -32,7 +26,7 @@ const create_title = body => {
       return `${createdUser.name}が「${content.summary}」を追加しました。`;
     case 2:
     case 3:
-      return `${createdUser.name}が「${content.summary}」を更新しました。\n${content.comment.content}`;
+      return `${createdUser.name}が「${content.summary}」を更新しました。`;
     case 4:
       return `${createdUser.name}が課題を削除しました。`;
     case 6:
@@ -57,10 +51,8 @@ const create_text = body => {
       return `[課題に移動(WEBページに遷移)](${create_link(body)})<br/>件名：${summary}<br/>コメント：${comment.content}<br/>日時：${created}`;
     case 4:
       return `[課題に移動(WEBページに遷移)](${create_link(body)})<br/>日時：${created}`;
-    case 6:
-      return `[課題に移動(WEBページに遷移)](${create_link(body)})<br/>件名：${summary}<br/>課題の詳細：${description}<br/>日時：${created}<br />`;
-    // case 14:
-    //   return `[info][title]${createdUser.name}が課題をまとめて更新しました。[/title]${create_links(link).join("\n")}[/info]`;
+    case 14:
+      return issue_multi_update(body);
     case 17:
       return `[課題に移動(WEBページに遷移)](${create_link(body)})<br/>件名：${summary}<br/>課題の詳細：${comment.content}<br/>日時：${created}`;
   }
